@@ -1,5 +1,9 @@
+from time import sleep
+
 import pygame
 import pymunk
+import pygame_gui
+import threading
 
 scene_objects = {}
 
@@ -10,58 +14,87 @@ class Object:
         self.shape_data = shape_data
 
 
-class UI:
-    def __init__(self):
-        # Populate the UI properties here
-        pass
-
-
 class Viewport:
     def __init__(self):
-        self.running = False
-        # Initialize any additional viewport properties here
+        self.running = True
+        self.thread = threading.Thread(target=self.simulate)
+        self.thread.start()
+
+    def simulate(self):
+        while self.running:
+            # replace this to simulate the objects from the list
+            print('sim')
+            sleep(0.5)
 
     def start(self):
-        # Start the simulation thread in the background
         self.running = True
-        while self.running:
-            # Simulate the physics using Pymunk and update the viewport with Pygame
-            pass
 
     def stop(self):
         # Stop the simulation thread
         self.running = False
+        if self.thread is not None:
+            self.thread = None
 
     def restart(self):
-        # Restart the simulation thread
-        self.stop()
-        self.start()
+        self.thread.join()
+
+        self.thread = threading.Thread(target=self.simulate)
+        self.thread.start()
 
 
 def main():
     pygame.init()
-    screen_width, screen_height = 800, 600
-    screen = pygame.display.set_mode((screen_width, screen_height))
+
+    viewport = Viewport()
+    # ui = UI(viewport.start, viewport.stop)
+    # ui.run()
+    # ui.ui_thread.start()
+    viewport.start()
+
+    pygame.display.set_caption('Button Theming Test')
+    window_surface = pygame.display.set_mode((800, 600))
+    manager = pygame_gui.UIManager((800, 600), 'data/themes/button_theming_test_theme.json')
     clock = pygame.time.Clock()
 
-    # Initialize your objects, UI, and viewport here
-    ui = UI()
-    viewport = Viewport()
+    background = pygame.Surface((800, 600))
+    background.fill(manager.get_theme().get_colour('dark_bg'))
 
-    viewport.start()  # Start the simulation thread
+    load_time_1 = clock.tick()
 
-    running = True
-    while running:
+    button_row_width = 100
+    button_row_height = 40
+    spacing = 20
+    for j in range(1, 10):
+        for i in range(1, 7):
+            position = (i * spacing + ((i - 1) * button_row_width),
+                        (j * spacing + ((j - 1) * button_row_height)))
+            pygame_gui.elements.UIButton(relative_rect=pygame.Rect(position,
+                                                                   (button_row_width,
+                                                                    button_row_height)),
+                                         text=str(i) + ',' + str(j),
+                                         manager=manager,
+                                         object_id='#' + str(i) + ',' + str(j))
+
+    load_time_2 = clock.tick()
+    print('Button creation time taken:', load_time_2 / 1000.0, 'seconds.')
+
+    is_running = True
+
+    while is_running:
+        time_delta = clock.tick(60) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                is_running = False
 
-        # Update the UI and viewport elements here
+            manager.process_events(event)
 
-        pygame.display.flip()
-        clock.tick(60)
+        manager.update(time_delta)
 
-    viewport.stop()  # Stop the simulation thread
+        window_surface.blit(background, (0, 0))
+        manager.draw_ui(window_surface)
+
+        pygame.display.update()
+
     pygame.quit()
 
 
