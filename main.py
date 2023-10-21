@@ -55,10 +55,10 @@ class Viewport:
 
         # Balls
         # balls = [createBall(space, (100,300))]
-        self.balls = []
+        # self.balls = []
 
         # Polys
-        self.polys = []
+        # self.polys = []
 
         self.run_physics = True
 
@@ -129,7 +129,8 @@ class Viewport:
             wall_shape.collision_type = COLLTYPE_DEFAULT
             self.space.add(wall_body, wall_shape)
 
-            scene_objects.append(Object(Object.Type.WALL, wall_body, wall_shape))
+            # scene_objects.append(Object(Object.Type.WALL, wall_body, wall_shape))
+            self.walls.append(Object(Object.Type.WALL, wall_body, wall_shape))
 
     def draw_ball(self, ball):
         body = ball.body
@@ -142,6 +143,7 @@ class Viewport:
         body = wall.body
         pv1 = self.flipyv(body.position + wall.a.cpvrotate(body.rotation_vector))
         pv2 = self.flipyv(body.position + wall.b.cpvrotate(body.rotation_vector))
+
         pygame.draw.lines(background, pygame.Color("lightgray"), False, [pv1, pv2])
 
     def draw_poly(self, poly):
@@ -166,8 +168,8 @@ class Viewport:
             if object.type == Object.Type.POLY:
                 self.draw_poly(object.poly)
 
-            if object.type == Object.Type.WALL:
-                self.draw_wall(object.poly)
+        for wall in self.walls:
+            self.draw_wall(wall.poly)
 
         if len(self.wall_points) > 1:
             ps = [self.flipyv(Vec2d(*p)) for p in self.wall_points]
@@ -184,7 +186,7 @@ class Viewport:
         pygame.display.flip()
 
     def simulate(self):
-        self.space.step(0.02)
+        self.space.step(0.01)
 
     def start(self):
         if not self.running:
@@ -227,7 +229,7 @@ def main():
                                                 manager=manager,
                                                 container=control_panel)
 
-    properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 310),
+    properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 510),
                                                    manager=manager)
     properties_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((70, 0, 80, 30)),
                                                    text='Properties',
@@ -277,18 +279,42 @@ def main():
                                                               manager=manager,
                                                               container=properties_panel_velocity)
 
-    update_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 260, 100, 30)),
-                                                 text='Update',
-                                                 manager=manager,
-                                                 container=properties_panel)
-    remove_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 260, 100, 30)),
-                                                 text='Remove',
-                                                 manager=manager,
-                                                 container=properties_panel)
-    x_position_textentry.set_text('0')
+    properties_panel_mass = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(10, 260, 210, 55),
+                                                            manager=manager,
+                                                            container=properties_panel)
+    mass_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 10, 120, 30)),
+                                             text='Mass:         ',
+                                             manager=manager,
+                                             container=properties_panel_mass)
+    mass_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((60, 10, 80, 30)),
+                                                        manager=manager,
+                                                        container=properties_panel_mass)
+    mass_unit_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((95, 10, 120, 30)),
+                                                  text='kg',
+                                                  manager=manager,
+                                                  container=properties_panel_mass)
+
+    properties_panel_size = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(10, 325, 210, 55),
+                                                        manager=manager,
+                                                        container=properties_panel)
+    size_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 10, 120, 30)),
+                                             text='Size:         ',
+                                             manager=manager,
+                                             container=properties_panel_size)
+    size_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((60, 10, 80, 30)),
+                                                        manager=manager,
+                                                        container=properties_panel_size)
+    size_unit_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((95, 10, 120, 30)),
+                                                  text='m',
+                                                  manager=manager,
+                                                  container=properties_panel_size)
+
+    x_position_textentry.set_text('300')
     y_position_textentry.set_text('105')
     x_velocity_textentry.set_text('0')
     y_velocity_textentry.set_text('0')
+    mass_textentry.set_text('5')
+    size_textentry.set_text('5')
 
     is_running = True
 
@@ -313,6 +339,10 @@ def main():
                         viewport.pause()
                 if event.ui_element == reset_button:
                     print('Reset button pressed')
+                    scene_objects.clear()
+                    viewport.space = pymunk.Space()  # Create a Space which contain the simulation
+                    viewport.space.gravity = 0, -981
+                    viewport.create_wall_segments([(0, 100), (1400, 100)])
 
                 if event.ui_element == add_box_button:
                     x = float(x_position_textentry.get_text())
