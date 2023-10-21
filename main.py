@@ -51,30 +51,6 @@ class Viewport:
 
         # Walls
         self.walls = []
-        self.create_wall_segments([(0, 100), (1400, 100)])
-
-        # self.create_box((700, 110))
-        self.create_rect((700, 110), w=30, h=10)
-        self.create_rect((700, 130), w=30, h=10)
-        self.create_rect((700, 150), w=30, h=10)
-        self.create_rect((700, 170), w=30, h=10)
-
-        self.create_rect((800, 110), w=30, h=10)
-        self.create_rect((800, 130), w=30, h=10)
-        self.create_rect((800, 150), w=30, h=10)
-        self.create_rect((800, 170), w=30, h=10)
-
-        # self.create_box((700, 130))
-        # self.create_box((700, 150))
-        # self.create_box((701, 170))
-
-        # self.create_box((790, 110))
-        # self.create_box((790, 130))
-        # self.create_box((790, 150))
-        # self.create_box((790, 170))
-
-        box_points = [(-30, -10), (-0, 10), (120, 10), (150, -10)]
-        self.create_poly(box_points, v=(0, 0), mass=1, pos=(700, 190))
 
         # Balls
         # balls = [createBall(space, (100,300))]
@@ -93,8 +69,32 @@ class Viewport:
         self.shape_to_remove = None
         self.mouse_contact = None
 
+        self.scene_init()
+
         # self.balls.append(self.create_ball((500, 500)))
         # scene_objects.append(self.create_ball((500, 500)))
+
+    def scene_init(self):
+        self.create_wall_segments([(0, 100), (1400, 100)])
+
+        # self.create_box((700, 110))
+        self.create_rect((700, 110), w=30, h=10)
+        self.create_rect((700, 130), w=30, h=10)
+        self.create_rect((700, 150), w=30, h=10)
+        self.create_rect((700, 170), w=30, h=10)
+
+        self.create_rect((800, 110), w=30, h=10)
+        self.create_rect((800, 130), w=30, h=10)
+        self.create_rect((800, 150), w=30, h=10)
+        self.create_rect((800, 170), w=30, h=10)
+
+        box_points = [(-30, -10), (-0, 10), (120, 10), (150, -10)]
+        self.create_poly(box_points, v=(0, 0), mass=10, pos=(700, 190))
+
+        box_points = [(0, 0), (0, 200), (520, 0)]
+        self.create_poly(box_points, v=(0, 0), mass=1000, pos=(100, 100))
+
+        self.create_ball((150, 350), radius=35, mass=100)
 
     def flipyv(self, v):
         return int(v.x), int(-v.y + HEIGHT)
@@ -370,7 +370,8 @@ def main():
                     scene_objects.clear()
                     viewport.space = pymunk.Space()  # Create a Space which contain the simulation
                     viewport.space.gravity = 0, -981
-                    viewport.create_wall_segments([(0, 100), (1400, 100)])
+                    # viewport.create_wall_segments([(0, 100), (1400, 100)])
+                    viewport.scene_init()
 
                 x = float(x_position_textentry.get_text())
                 y = float(y_position_textentry.get_text())
