@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (min-width: 400px) {
+  .background-gradient::before {
+    background: radial-gradient(
+      20% 50% at 50% 50%,
+      rgba(71, 127, 247, 0.376) 0%,
+      rgba(37, 38, 44, 0) 100%
+    );
+
+    background-image: url(''); /* Replace with your image path */
+    background-size: cover; /* Adjust as needed */
+    background-repeat: no-repeat; /* Adjust as needed */
+
+    z-index: -10;
+    content: "";
+    position: absolute;
+    inset: 0px;
+    transform: scale(1);
+    pointer-events: none;
+  }
+}
+
+@font-face {
+  font-family: Sora-XB;
+  src: url(../public/fonts/Sora-ExtraBold.ttf) format("opentype");
+}
+
+@font-face{
+  font-family: Manrope-XB;
+  src: url(../public/fonts/Manrope-ExtraBold.ttf) format("opentype");
+}
+
+@font-face{
+  font-family: Sora-REG;
+  src: url(../public/fonts/Sora-Regular.ttf) format("opentype");
+}
+
+@font-face{
+  font-family: Manrope-REG;
+  src: url(../public/fonts/Manrope-Regular.ttf) format("opentype");
+}
