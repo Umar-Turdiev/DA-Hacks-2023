@@ -236,19 +236,14 @@ def main():
                                                    container=add_panel)
 
     control_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(588, 620, 235, 50), manager=manager)
-    start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 7.5, 100, 30)),
-                                                text='Start',
+    start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 7.5, 120, 30)),
+                                                text='Play/Pause',
                                                 manager=manager,
                                                 container=control_panel)
-    pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 7.5, 100, 30)),
-                                                text='Pause',
+    reset_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((140, 7.5, 80, 30)),
+                                                text='Reset',
                                                 manager=manager,
                                                 container=control_panel)
-
-    restart_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((250, 10), (100, 30)),
-                                                  text='Restart',
-                                                  manager=manager,
-                                                  object_id='Restart')
 
     properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 310),
                                                    manager=manager)
@@ -301,13 +296,13 @@ def main():
                                                               container=properties_panel_velocity)
 
     update_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 260, 100, 30)),
-                                                  text='Update',
-                                                  manager=manager,
-                                                  container=properties_panel)
+                                                 text='Update',
+                                                 manager=manager,
+                                                 container=properties_panel)
     remove_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 260, 100, 30)),
-                                                   text='Remove',
-                                                   manager=manager,
-                                                   container=properties_panel)
+                                                 text='Remove',
+                                                 manager=manager,
+                                                 container=properties_panel)
     is_running = True
 
     while is_running:
@@ -323,16 +318,14 @@ def main():
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == start_button:
-                    print('Start button pressed')
-                    viewport.start()
-                if event.ui_element == pause_button:
-                    print('Pause button pressed')
-                    viewport.pause()
-
-                if event.ui_element == restart_button:
-                    print('Restart button pressed')
-                    viewport.restart()
-
+                    if not viewport.running:
+                        print('Start')
+                        viewport.start()
+                    else:
+                        print('Pause button pressed')
+                        viewport.pause()
+                if event.ui_element == reset_button:
+                    print('Reset button pressed')
                 if event.ui_element == add_box_button:
                     viewport.create_box((500, 500))
                 if event.ui_element == add_ball_button:
