@@ -53,17 +53,27 @@ class Viewport:
         self.walls = []
         self.create_wall_segments([(0, 100), (1400, 100)])
 
-        self.create_box((700, 110))
-        self.create_box((700, 130))
-        self.create_box((700, 150))
-        self.create_box((701, 170))
+        # self.create_box((700, 110))
+        self.create_rect((700, 110), w=30, h=10)
+        self.create_rect((700, 130), w=30, h=10)
+        self.create_rect((700, 150), w=30, h=10)
+        self.create_rect((700, 170), w=30, h=10)
 
-        self.create_box((790, 110))
-        self.create_box((790, 130))
-        self.create_box((790, 150))
-        self.create_box((790, 170))
+        self.create_rect((800, 110), w=30, h=10)
+        self.create_rect((800, 130), w=30, h=10)
+        self.create_rect((800, 150), w=30, h=10)
+        self.create_rect((800, 170), w=30, h=10)
 
-        box_points = [(-10, -10), (-10, 10), (100, 10), (100, -10)]
+        # self.create_box((700, 130))
+        # self.create_box((700, 150))
+        # self.create_box((701, 170))
+
+        # self.create_box((790, 110))
+        # self.create_box((790, 130))
+        # self.create_box((790, 150))
+        # self.create_box((790, 170))
+
+        box_points = [(-30, -10), (-0, 10), (120, 10), (150, -10)]
         self.create_poly(box_points, v=(0, 0), mass=1, pos=(700, 190))
 
         # Balls
@@ -105,6 +115,11 @@ class Viewport:
         scene_objects.append(object)
 
         return object
+
+    def create_rect(self, pos, v=(0, 0), w=10, h=10, mass=5.0):
+        box_points = [(-10, -10), (-10, 10), (w, h), (w, -h)]
+
+        return self.create_poly(box_points, v, mass=mass, pos=pos)
 
     def create_box(self, pos, v=(0, 0), size=10, mass=5.0):
         box_points = [(-size, -size), (-size, size), (size, size), (size, -size)]
