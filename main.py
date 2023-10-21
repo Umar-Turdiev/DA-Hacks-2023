@@ -1,6 +1,4 @@
-# Psysicks - DAHacks Project
 from enum import Enum
-from time import sleep
 
 import pygame
 import pymunk
@@ -8,7 +6,6 @@ import pymunk.util
 import pymunk.pygame_util
 from pymunk import Vec2d
 import pygame_gui
-import threading
 
 COLLTYPE_DEFAULT = 0
 COLLTYPE_MOUSE = 1
@@ -18,8 +15,10 @@ HEIGHT = 700
 
 pygame.init()
 pygame.display.set_caption('Pysicks')
+pygame_icon = pygame.image.load('data/logo.png')
+pygame.display.set_icon(pygame_icon)
 window_surface = pygame.display.set_mode((WIDTH, HEIGHT))
-manager = pygame_gui.UIManager((WIDTH, HEIGHT), 'data/themes/button_theming_test_theme.json')
+manager = pygame_gui.UIManager((WIDTH, HEIGHT), 'themes/button_theming_test_theme.json')
 clock = pygame.time.Clock()
 
 background = pygame.Surface((WIDTH, HEIGHT))
@@ -50,22 +49,22 @@ class Viewport:
 
         self.clock = pygame.time.Clock()
 
-        ### Walls
+        # Walls
         self.walls = []
-        self.create_wall_segments([(100, 50), (500, 50)])
+        self.create_wall_segments([(0, 100), (1400, 100)])
 
-        ## Balls
+        # Balls
         # balls = [createBall(space, (100,300))]
         self.balls = []
 
-        ### Polys
+        # Polys
         self.polys = []
 
         self.run_physics = True
 
-        ### Wall under construction
+        # Wall under construction
         self.wall_points = []
-        ### Poly under construction
+        # Poly under construction
         self.poly_points = []
 
         self.shape_to_remove = None
@@ -77,11 +76,11 @@ class Viewport:
     def flipyv(self, v):
         return int(v.x), int(-v.y + HEIGHT)
 
-    def create_ball(self, point, mass=1.0, radius=15.0):
+    def create_ball(self, point, v=(0, 0), mass=1.0, radius=15.0):
         moment = pymunk.moment_for_circle(mass, 0.0, radius)
         ball_body = pymunk.Body(mass, moment)
         ball_body.position = Vec2d(*point)
-        ball_body.velocity = -100, 500
+        ball_body.velocity = v
 
         ball_shape = pymunk.Circle(ball_body, radius)
         ball_shape.friction = 1.5
@@ -94,12 +93,12 @@ class Viewport:
 
         return object
 
-    def create_box(self, pos, size=10, mass=5.0):
+    def create_box(self, pos, v, size=10, mass=5.0):
         box_points = [(-size, -size), (-size, size), (size, size), (size, -size)]
 
-        return self.create_poly(box_points, mass=mass, pos=pos)
+        return self.create_poly(box_points, v, mass=mass, pos=pos)
 
-    def create_poly(self, points, mass=5.0, pos=(0, 0)):
+    def create_poly(self, points, v=(0, 0), mass=5.0, pos=(0, 0)):
         moment = pymunk.moment_for_poly(mass, points)
         # moment = 1000
         body = pymunk.Body(mass, moment)
@@ -107,7 +106,7 @@ class Viewport:
         shape = pymunk.Poly(body, points)
         shape.friction = 0.5
         shape.collision_type = COLLTYPE_DEFAULT
-        body.velocity = 10, 2
+        body.velocity = v
         self.space.add(body, shape)
 
         object = Object(Object.Type.POLY, body, shape)
@@ -137,7 +136,7 @@ class Viewport:
         v = body.position + ball.offset.cpvrotate(body.rotation_vector)
         p = self.flipyv(v)
         r = ball.radius
-        pygame.draw.circle(background, pygame.Color("blue"), p, int(r), 2)
+        pygame.draw.circle(background, pygame.Color("blue"), p, int(r), 5)
 
     def draw_wall(self, wall):
         body = wall.body
@@ -170,39 +169,22 @@ class Viewport:
             if object.type == Object.Type.WALL:
                 self.draw_wall(object.poly)
 
-        ### Draw Uncompleted walls
         if len(self.wall_points) > 1:
             ps = [self.flipyv(Vec2d(*p)) for p in self.wall_points]
             pygame.draw.lines(background, pygame.Color("gray"), False, ps, 2)
 
-        ### Uncompleted poly
         if len(self.poly_points) > 1:
             ps = [self.flipyv(Vec2d(*p)) for p in self.poly_points]
             pygame.draw.lines(background, pygame.Color("red"), False, ps, 2)
 
-        ### Mouse Contact
         if self.mouse_contact is not None:
             p = self.flipyv(self.mouse_contact)
             pygame.draw.circle(background, pygame.Color("red"), p, 3)
 
-        ### All done, lets flip the display
         pygame.display.flip()
 
     def simulate(self):
-        draw_options = pymunk.pygame_util.DrawOptions(background)
-        # draw_options = pymunk.SpaceDebugDrawOptions()  # For easy printing
-
         self.space.step(0.02)
-
-        # self.space.debug_draw(draw_options)  # Print the state of the simulation
-        # self.draw()
-
-        # while self.running:
-        #     self.space.step(0.02)
-        #
-        #     # self.space.debug_draw(draw_options)  # Print the state of the simulation
-        #     self.draw()
-        #     clock.tick(50)
 
     def start(self):
         if not self.running:
@@ -235,7 +217,7 @@ def main():
                                                    manager=manager,
                                                    container=add_panel)
 
-    control_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(588, 620, 235, 50), manager=manager)
+    control_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(588, 630, 235, 50), manager=manager)
     start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 7.5, 120, 30)),
                                                 text='Play/Pause',
                                                 manager=manager,
@@ -303,6 +285,11 @@ def main():
                                                  text='Remove',
                                                  manager=manager,
                                                  container=properties_panel)
+    x_position_textentry.set_text('0')
+    y_position_textentry.set_text('105')
+    x_velocity_textentry.set_text('0')
+    y_velocity_textentry.set_text('0')
+
     is_running = True
 
     while is_running:
@@ -326,10 +313,21 @@ def main():
                         viewport.pause()
                 if event.ui_element == reset_button:
                     print('Reset button pressed')
+
                 if event.ui_element == add_box_button:
-                    viewport.create_box((500, 500))
+                    x = float(x_position_textentry.get_text())
+                    y = float(y_position_textentry.get_text())
+                    vx = float(x_velocity_textentry.get_text())
+                    vy = float(y_velocity_textentry.get_text())
+
+                    viewport.create_box((x, y), (vx, vy))
                 if event.ui_element == add_ball_button:
-                    viewport.create_ball((500, 500))
+                    x = float(x_position_textentry.get_text())
+                    y = float(y_position_textentry.get_text())
+                    vx = float(x_velocity_textentry.get_text())
+                    vy = float(y_velocity_textentry.get_text())
+
+                    viewport.create_ball((x, y), (vx, vy))
 
             manager.process_events(event)
 
