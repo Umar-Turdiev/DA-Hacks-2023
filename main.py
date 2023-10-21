@@ -1,3 +1,5 @@
+# Psysicks - DAHacks Project
+
 from time import sleep
 
 import pygame
