@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Footer from "../components/Footer";
 import Features from "../components/Features";
 
 export default function HomePage() {
@@ -29,11 +28,11 @@ export default function HomePage() {
       <h1 className ="">
         As college students majoring in STEM, we saw ourselves struggling in physics classes, like most of our peers. It was hard to grasp the concepts, especially classical Mechanics like projectile motion — where there were too many variables to consider. There weren't many great resources to aid us in visualizing this idea.
       </h1>
-      <h2 className = "mt-8 text-cyan-500">
+      <h2 className = "mt-8 text-cyan-500 text-3xl">
         Enter Physicks
       </h2>
       <h1 className ="mt-8">
-        Physics is a 2D projectile motion simulator that helps you visualize how 
+        Physicks is a 2D projectile motion simulator that helps you visualize how objects will interact with each other according to their physical properties. Physicks provides a powerful tool to model and understand the fundamental principles of physics. By inputting parameters such as mass, initial velocity, and gravitational forces, you can watch as objects traverse intricate trajectories and gain a deeper insight into the fascinating world of physics.
       </h1>
     </div>
     {/* Features Title*/}
@@ -62,14 +61,14 @@ export default function HomePage() {
     {/*Join*/}
     <div className ="relative flex flex-col jusitfy-center w-full">
       <div className ="flex flex-col items-center justify-center rounded-2xl mt-32 p-16">
-        <h4 className = "font-sora text-7xl mb-8">What can you imagine?</h4>
+        <h4 className = "font-sora text-7xl mb-8">PHYSICKS</h4>
         <Link
           className="bg-white rounded-lg text-black p-[16px] font-manrope text-3xl mb-4"
           href="/Python"
         >
-          START FREE TRIAL
+          START SEEING A DIFFERENT WORLD
         </Link>
-        <h4 className ="font-manropeR text-xl">No credit card required</h4>
+        <h4 className ="font-manropeR text-xl"></h4>
       </div>
       <div className="absolute bottom-0 left-0">
         <Image
@@ -80,8 +79,6 @@ export default function HomePage() {
         />
       </div>
     </div>
-
-    <Footer />
   </main>
   );
 }

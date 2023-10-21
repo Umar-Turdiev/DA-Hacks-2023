@@ -36,14 +36,14 @@ return(
       />
 
       <Feature
-        title="Your video, your style"
-        description="There's a unique AI style for everyone. Create an anime intro, a psychedelic music video, or photorealistic footage."
-        videoSrc="/gravity.mp4"
+        title="Customize Properties"
+        description="Explore various options to customize the physical properties of the object"
+        videoSrc="/Custom.mp4"
       />
       <Feature
-        title="You're in control"
-        description="A familiar timeline editor gives you the control you need to make your vision a reality."
-        videoSrc="/gravity.mp4"
+        title="Flexible Sandbox"
+        description="Sky's the limit for creativity! Play around with various mechanics"
+        videoSrc="/Create.mp4"
       />
     </div>
     <div className="absolute top-96 mt-[600px] left-0">
