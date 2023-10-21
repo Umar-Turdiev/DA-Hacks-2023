@@ -53,6 +53,19 @@ class Viewport:
         self.walls = []
         self.create_wall_segments([(0, 100), (1400, 100)])
 
+        self.create_box((700, 110))
+        self.create_box((700, 130))
+        self.create_box((700, 150))
+        self.create_box((701, 170))
+
+        self.create_box((790, 110))
+        self.create_box((790, 130))
+        self.create_box((790, 150))
+        self.create_box((790, 170))
+
+        box_points = [(-10, -10), (-10, 10), (100, 10), (100, -10)]
+        self.create_poly(box_points, v=(0, 0), mass=1, pos=(700, 190))
+
         # Balls
         # balls = [createBall(space, (100,300))]
         # self.balls = []
@@ -71,7 +84,7 @@ class Viewport:
         self.mouse_contact = None
 
         # self.balls.append(self.create_ball((500, 500)))
-        scene_objects.append(self.create_ball((500, 500)))
+        # scene_objects.append(self.create_ball((500, 500)))
 
     def flipyv(self, v):
         return int(v.x), int(-v.y + HEIGHT)
@@ -93,7 +106,7 @@ class Viewport:
 
         return object
 
-    def create_box(self, pos, v, size=10, mass=5.0):
+    def create_box(self, pos, v=(0, 0), size=10, mass=5.0):
         box_points = [(-size, -size), (-size, size), (size, size), (size, -size)]
 
         return self.create_poly(box_points, v, mass=mass, pos=pos)
@@ -310,11 +323,11 @@ def main():
                                                   container=properties_panel_size)
 
     x_position_textentry.set_text('300')
-    y_position_textentry.set_text('105')
+    y_position_textentry.set_text('300')
     x_velocity_textentry.set_text('0')
     y_velocity_textentry.set_text('0')
-    mass_textentry.set_text('5')
-    size_textentry.set_text('5')
+    mass_textentry.set_text('10')
+    size_textentry.set_text('30')
 
     is_running = True
 
