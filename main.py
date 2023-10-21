@@ -13,8 +13,8 @@ import threading
 COLLTYPE_DEFAULT = 0
 COLLTYPE_MOUSE = 1
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1400
+HEIGHT = 700
 
 pygame.init()
 pygame.display.set_caption('Pysicks')
@@ -22,7 +22,7 @@ window_surface = pygame.display.set_mode((WIDTH, HEIGHT))
 manager = pygame_gui.UIManager((WIDTH, HEIGHT), 'data/themes/button_theming_test_theme.json')
 clock = pygame.time.Clock()
 
-background = pygame.Surface((800, 600))
+background = pygame.Surface((WIDTH, HEIGHT))
 background.fill(manager.get_theme().get_colour('dark_bg'))
 
 scene_objects = []
@@ -89,6 +89,8 @@ class Viewport:
         self.space.add(ball_body, ball_shape)
 
         object = Object(Object.Type.BALL, ball_body, ball_shape)
+
+        scene_objects.append(object)
 
         return object
 
@@ -193,7 +195,7 @@ class Viewport:
         self.space.step(0.02)
 
         # self.space.debug_draw(draw_options)  # Print the state of the simulation
-        self.draw()
+        # self.draw()
 
         # while self.running:
         #     self.space.step(0.02)
@@ -223,24 +225,89 @@ class Viewport:
 def main():
     viewport = Viewport()
 
-    start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 10), (100, 30)),
+    add_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(30, 30, 235, 50), manager=manager)
+    add_box_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 7.5, 100, 30)),
+                                                  text='Add Box',
+                                                  manager=manager,
+                                                  container=add_panel)
+    add_ball_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 7.5, 100, 30)),
+                                                   text='Add Ball',
+                                                   manager=manager,
+                                                   container=add_panel)
+
+    control_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(588, 620, 235, 50), manager=manager)
+    start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 7.5, 100, 30)),
                                                 text='Start',
                                                 manager=manager,
-                                                object_id='Start')
-    pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 10), (100, 30)),
+                                                container=control_panel)
+    pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 7.5, 100, 30)),
                                                 text='Pause',
                                                 manager=manager,
-                                                object_id='Pause')
-    restart_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((240, 10), (100, 30)),
+                                                container=control_panel)
+
+    restart_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((250, 10), (100, 30)),
                                                   text='Restart',
                                                   manager=manager,
                                                   object_id='Restart')
 
-    add_rect = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 300), (100, 30)),
-                                            text='Add Rectangle',
-                                            manager=manager,
-                                            object_id='AddRectangle')
+    properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 310),
+                                                   manager=manager)
+    properties_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((70, 0, 80, 30)),
+                                                   text='Properties',
+                                                   manager=manager,
+                                                   container=properties_panel)
+    properties_panel_position = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(10, 30, 210, 105),
+                                                            manager=manager,
+                                                            container=properties_panel)
+    position_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 0, 120, 30)),
+                                                 text='Position    ',
+                                                 manager=manager,
+                                                 container=properties_panel_position)
+    x_position_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 25, 70, 30)),
+                                                   text='X:',
+                                                   manager=manager,
+                                                   container=properties_panel_position)
+    y_position_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 55, 70, 30)),
+                                                   text='Y:',
+                                                   manager=manager,
+                                                   container=properties_panel_position)
+    x_position_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((50, 25, 130, 30)),
+                                                              manager=manager,
+                                                              container=properties_panel_position)
+    y_position_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((50, 55, 130, 30)),
+                                                              manager=manager,
+                                                              container=properties_panel_position)
 
+    properties_panel_velocity = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(10, 145, 210, 105),
+                                                            manager=manager,
+                                                            container=properties_panel)
+    velocity_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 0, 120, 30)),
+                                                 text='Velocity (m/s)',
+                                                 manager=manager,
+                                                 container=properties_panel_velocity)
+    x_velocity_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 25, 70, 30)),
+                                                   text='X:',
+                                                   manager=manager,
+                                                   container=properties_panel_velocity)
+    y_velocity_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 55, 70, 30)),
+                                                   text='Y:',
+                                                   manager=manager,
+                                                   container=properties_panel_velocity)
+    x_velocity_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((50, 25, 130, 30)),
+                                                              manager=manager,
+                                                              container=properties_panel_velocity)
+    y_velocity_textentry = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((50, 55, 130, 30)),
+                                                              manager=manager,
+                                                              container=properties_panel_velocity)
+
+    update_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 260, 100, 30)),
+                                                  text='Update',
+                                                  manager=manager,
+                                                  container=properties_panel)
+    remove_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((120, 260, 100, 30)),
+                                                   text='Remove',
+                                                   manager=manager,
+                                                   container=properties_panel)
     is_running = True
 
     while is_running:
@@ -258,7 +325,6 @@ def main():
                 if event.ui_element == start_button:
                     print('Start button pressed')
                     viewport.start()
-
                 if event.ui_element == pause_button:
                     print('Pause button pressed')
                     viewport.pause()
@@ -267,9 +333,10 @@ def main():
                     print('Restart button pressed')
                     viewport.restart()
 
-                if event.ui_element == add_rect:
-                    scene_objects.append(viewport.create_ball((500, 500)))
+                if event.ui_element == add_box_button:
                     viewport.create_box((500, 500))
+                if event.ui_element == add_ball_button:
+                    viewport.create_ball((500, 500))
 
             manager.process_events(event)
 
@@ -280,6 +347,8 @@ def main():
 
         if viewport.running:
             viewport.simulate()
+
+        viewport.draw()
 
         pygame.display.update()
 
