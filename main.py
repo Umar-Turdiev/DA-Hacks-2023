@@ -229,7 +229,7 @@ def main():
                                                 manager=manager,
                                                 container=control_panel)
 
-    properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 510),
+    properties_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1135, 30, 235, 400),
                                                    manager=manager)
     properties_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((70, 0, 80, 30)),
                                                    text='Properties',
