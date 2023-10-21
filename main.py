@@ -280,8 +280,8 @@ def main():
                                                               container=properties_panel_velocity)
 
     properties_panel_mass = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(10, 260, 210, 55),
-                                                            manager=manager,
-                                                            container=properties_panel)
+                                                        manager=manager,
+                                                        container=properties_panel)
     mass_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 10, 120, 30)),
                                              text='Mass:         ',
                                              manager=manager,
@@ -344,20 +344,17 @@ def main():
                     viewport.space.gravity = 0, -981
                     viewport.create_wall_segments([(0, 100), (1400, 100)])
 
+                x = float(x_position_textentry.get_text())
+                y = float(y_position_textentry.get_text())
+                vx = float(x_velocity_textentry.get_text())
+                vy = float(y_velocity_textentry.get_text())
+                m = float(mass_textentry.get_text())
+                s = float(size_textentry.get_text())
+
                 if event.ui_element == add_box_button:
-                    x = float(x_position_textentry.get_text())
-                    y = float(y_position_textentry.get_text())
-                    vx = float(x_velocity_textentry.get_text())
-                    vy = float(y_velocity_textentry.get_text())
-
-                    viewport.create_box((x, y), (vx, vy))
+                    viewport.create_box((x, y), (vx, vy), mass=m, size=s)
                 if event.ui_element == add_ball_button:
-                    x = float(x_position_textentry.get_text())
-                    y = float(y_position_textentry.get_text())
-                    vx = float(x_velocity_textentry.get_text())
-                    vy = float(y_velocity_textentry.get_text())
-
-                    viewport.create_ball((x, y), (vx, vy))
+                    viewport.create_ball((x, y), (vx, vy), mass=m, radius=s * 2)
 
             manager.process_events(event)
 
